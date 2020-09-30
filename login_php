@@ -1,0 +1,2 @@
+#!/bin/bash
+docker exec -it -u1000:1000 tbot_game_php_1 bash

@@ -1,0 +1,51 @@
+version: '3.3'
+ 
+services:
+ 
+    php:
+        build:
+            context: ./docker/php
+            args:
+                 - USER_ID
+                 - GROUP_ID
+        volumes:
+            - ./app:/www/app
+            - ./docker/php/www.conf:/usr/local/etc/php-fpm.d/www.conf
+        environment:
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        networks:
+            - tbot
+
+    nginx:
+        image: nginx
+        ports:
+            - 1717:80
+        volumes:
+            - ./app:/www/app
+            - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+        networks:
+            - tbot
+        depends_on:
+            - php
+
+    mysql:
+        image: mysql
+        depends_on:
+            - php
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        networks:
+            - tbot
+
+networks:
+  tbot:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.18.0/24
+        
