@@ -35,8 +35,12 @@ services:
 
     mysql:
         image: mysql
+        ports:
+            - 3306:3306
         depends_on:
             - php
+        volumes:
+            - ./data:/var/lib/mysql
         environment:
             MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
             MYSQL_DATABASE: ${MYSQL_DATABASE}
